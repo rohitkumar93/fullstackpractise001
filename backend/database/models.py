@@ -5,14 +5,17 @@ from .config import Base
 
 class Document(Base):
     """
-    Stores uploaded documents and their metadata.
+    Stores uploaded documents. Currently raw text and ArXiv Paper formats supported
     """
     __tablename__ = "documents"
 
     id = Column(Integer, primary_key=True, index=True)
     filename = Column(String, nullable=False)
-    content = Column(LargeBinary, nullable=False)  # Stores raw file data
-    doc_metadata = Column(ARRAY(String))  # Renamed from 'metadata' to 'doc_metadata'
+    content = Column(LargeBinary, nullable=True)  # Make nullable for ArXiv papers
+    doc_metadata = Column(ARRAY(String))
+    source = Column(String, nullable=False, default="upload")  # "upload" or "arxiv"
+    url = Column(String, nullable=True)  # Store URL if ArXiv paper
+
 
 class Embedding(Base):
     """
