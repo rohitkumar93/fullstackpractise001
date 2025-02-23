@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from backend.retrieval_service.retrieval import RetrievalService
+from .retrieval import RetrievalService
 
 import logging
 
@@ -25,7 +25,8 @@ def retrieve_documents(request: QueryRequest, service: RetrievalService = Depend
     # ✅ Debug: Print the received request
     logger.debug(f"Received Request: {request}")
     print(f"✅ Received Request: {request}")  # Debugging print
-    results = service.search_similar_documents(request.query, request.top_k)
+    retrieval_service = RetrievalService()
+    results = retrieval_service.retrieve_relevant_docs(request.query, request.top_k)
 
     # ✅ Debug: Print the retrieved documents
     logger.debug(f"Retrieved Documents: {results}")

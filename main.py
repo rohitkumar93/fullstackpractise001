@@ -1,6 +1,7 @@
 import uvicorn
 import logging
 from fastapi import FastAPI, Request
+from backend.qna_service.routes import router as qna_router
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -38,6 +39,7 @@ from backend.selection_service.routes import router as selection_router
 app.include_router(ingestion_router, prefix="/ingestion", tags=["Document Ingestion"])
 app.include_router(retrieval_router, prefix="/retrieval", tags=["Retrieval & Q&A"])
 app.include_router(selection_router, prefix="/selection", tags=["Document Selection"])
+app.include_router(qna_router, prefix="/qna", tags=["Q&A"])
 
 # Run the application using Uvicorn with a defined host and port.
 if __name__ == "__main__":
