@@ -1,0 +1,26 @@
+services:
+  db:
+    image: ankane/pgvector
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: rag_qna_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    container_name: fast_rag_backend
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:password@db:5432/rag_qna_db
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:

@@ -1,0 +1,4 @@
+python -m backend.ingestion_service.arxiv_ingester
+python -m backend.ingestion_service.sample_ingest
+
+

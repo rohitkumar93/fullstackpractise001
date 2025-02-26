@@ -1,9 +1,7 @@
-import requests
 import feedparser
-from backend.database.config import SessionLocal
-from backend.database.models import Document
-from backend.ingestion_service.service import DocumentIngestionService
+import requests
 
+from backend.ingestion_service.service import DocumentIngestionService
 
 ARXIV_API_URL = "http://export.arxiv.org/api/query"
 
@@ -11,6 +9,7 @@ def fetch_arxiv_papers(query: str, max_results: int = 5):
     """
     Fetches papers from ArXiv based on a query.
     """
+    print("Fetching papers from ArXiv...")
     params = {
         "search_query": query,
         "start": 0,
@@ -35,13 +34,15 @@ def fetch_arxiv_papers(query: str, max_results: int = 5):
             "url": entry.link
         }
         papers.append(paper_data)
+        print("paper_data",paper_data)
 
     return papers
 
 
 def store_papers_in_db(papers):
+    print("Fetching papers from ArXiv...")
     service = DocumentIngestionService()  # Initialize service
 
     for paper in papers:
-        # print('paper',paper)
+        print('paper',paper)
         service.process_document(filename=paper["title"], content=paper["abstract"])

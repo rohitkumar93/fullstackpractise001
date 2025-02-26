@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from .retrieval import RetrievalService
+from .bm25_retrieval import BM25RetrievalService  # ✅ Import BM25 retrieval service
 
 import logging
 
@@ -15,7 +16,8 @@ class QueryRequest(BaseModel):
     query: str
     top_k: int = 5  # Default value
 
-@router.post("/search")
+# ✅ Embedding-based retrieval route
+@router.post("/search/embedding")
 def retrieve_documents(request: QueryRequest, service: RetrievalService = Depends()):
     """
     Accepts a user query, retrieves the most relevant documents using embeddings,
@@ -25,10 +27,29 @@ def retrieve_documents(request: QueryRequest, service: RetrievalService = Depend
     # ✅ Debug: Print the received request
     logger.debug(f"Received Request: {request}")
     print(f"✅ Received Request: {request}")  # Debugging print
-    retrieval_service = RetrievalService()
-    results = retrieval_service.retrieve_relevant_docs(request.query, request.top_k)
+
+    results = service.retrieve_relevant_docs(request.query, request.top_k)
 
     # ✅ Debug: Print the retrieved documents
-    logger.debug(f"Retrieved Documents: {results}")
+    logger.debug(f"Retrieved Documents (Embedding): {results}")
+
+    return {"documents": results}
+
+# ✅ BM25-based retrieval route
+@router.post("/search/bm25")
+def retrieve_documents_bm25(request: QueryRequest, service: BM25RetrievalService = Depends()):
+    """
+    Accepts a user query, retrieves the most relevant documents using BM25 ranking,
+    and returns matching document contents.
+    """
+
+    # ✅ Debug: Print the received request
+    logger.debug(f"Received Request (BM25): {request}")
+    print(f"✅ Received Request (BM25): {request}")  # Debugging print
+
+    results = service.retrieve_relevant_docs(request.query, request.top_k)
+
+    # ✅ Debug: Print the retrieved documents
+    logger.debug(f"Retrieved Documents (BM25): {results}")
 
     return {"documents": results}
