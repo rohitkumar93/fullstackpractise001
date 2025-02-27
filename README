@@ -1,4 +1,8 @@
 python -m backend.ingestion_service.arxiv_ingester
 python -m backend.ingestion_service.sample_ingest
 
+docker-compose exec backend python -m backend.ingestion_service.arxiv_ingester
+docker-compose exec backend python -m backend.ingestion_service.sample_ingest
 
+
+docker-compose exec db psql -U postgres -d rag_qna_db -c "CREATE EXTENSION IF NOT EXISTS vector;"

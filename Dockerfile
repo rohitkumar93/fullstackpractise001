@@ -1,18 +1,24 @@
-# Use an official Python image as base
-FROM python:3.11-slim
+# Use the official PostgreSQL 15 image
+FROM postgres:15
 
-# Set the working directory
-WORKDIR /app
+# Install necessary packages including git and pgvector extension
+RUN apt-get update && apt-get install -y \
+      postgresql-server-dev-15 \
+      gcc \
+      make \
+      git && \
+    git clone https://github.com/pgvector/pgvector.git && \
+    cd pgvector && \
+    make && make install && \
+    cd .. && rm -rf pgvector && \
+    apt-get remove -y gcc make postgresql-server-dev-15 && \
+    apt-get autoremove -y && \
+    apt-get clean
 
-# Install dependencies separately for caching
-COPY requirements.txt .
-RUN pip install --no-cache-dir --prefer-binary -r requirements.txt
+# Set environment variables
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=password
+ENV POSTGRES_DB=rag_qna_db
 
-# Copy the rest of the application code
-COPY . .
-
-# Expose the FastAPI port
-EXPOSE 8000
-
-# Run FastAPI application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Expose the PostgreSQL port
+EXPOSE 5432

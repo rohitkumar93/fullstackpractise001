@@ -1,5 +1,5 @@
 from backend.database.config import SessionLocal
-from backend.database.models import Document, Embedding
+from backend.database.models import Document, Embedding, SelectedDocument
 from backend.ingestion_service.embedding_generator import EmbeddingGenerator
 import numpy as np
 
@@ -34,10 +34,15 @@ def ingest_sample_documents():
         db.add(embedding_entry)
         db.commit()
 
-        print(f"✅ Added Document: {document.filename} | ID: {document.id} | Vector Size: {len(embedding_vector)}")
+        # ✅ Select document for retrieval
+        selected_doc = SelectedDocument(document_id=document.id)
+        db.add(selected_doc)
+        db.commit()
+
+        print(f"✅ Added & Selected Document: {document.filename} | ID: {document.id} | Vector Size: {len(embedding_vector)}")
 
     db.close()
-    print("✅ Sample documents have been added!")
+    print("✅ Sample documents have been added and selected for retrieval!")
 
 if __name__ == "__main__":
     ingest_sample_documents()
