@@ -1,24 +1,10 @@
-# Use the official PostgreSQL 15 image
-FROM postgres:15
+FROM python:3.11
 
-# Install necessary packages including git and pgvector extension
-RUN apt-get update && apt-get install -y \
-      postgresql-server-dev-15 \
-      gcc \
-      make \
-      git && \
-    git clone https://github.com/pgvector/pgvector.git && \
-    cd pgvector && \
-    make && make install && \
-    cd .. && rm -rf pgvector && \
-    apt-get remove -y gcc make postgresql-server-dev-15 && \
-    apt-get autoremove -y && \
-    apt-get clean
+WORKDIR /app
 
-# Set environment variables
-ENV POSTGRES_USER=postgres
-ENV POSTGRES_PASSWORD=password
-ENV POSTGRES_DB=rag_qna_db
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
-# Expose the PostgreSQL port
-EXPOSE 5432
+COPY . .
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

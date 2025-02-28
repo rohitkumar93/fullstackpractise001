@@ -1,6 +1,8 @@
 import uvicorn
 import logging
+import os
 from fastapi import FastAPI, Request
+from sqlalchemy import create_engine, text
 from backend.qna_service.routes import router as qna_router
 
 logging.basicConfig(
@@ -10,11 +12,18 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
-# Initialize the FastAPI appl with a descriptive project title.
+# Initialize the FastAPI app with a descriptive project title.
 # for better API documentation and future scalability.
 app = FastAPI(title="RAG-based Q&A System")
 
+# Database connection
+DATABASE_URL = os.getenv("DATABASE_URL")
+engine = create_engine(DATABASE_URL)
+
+@app.on_event("startup")
+def startup():
+    with engine.connect() as connection:
+        connection.execute(text("SELECT 1"))
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):

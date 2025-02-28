@@ -1,34 +1,17 @@
-#!/bin/sh
+#!/bin/bash
+set -e
 
-set -e  # Exit immediately if a command exits with a non-zero status
+# Check if the database exists
+DB_EXISTS=$(psql -U "$POSTGRES_USER" -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$POSTGRES_DB'")
 
-echo "🚀 Waiting for PostgreSQL to be ready..."
+# Create the database if it doesn't exist
+if [ "$DB_EXISTS" != "1" ]; then
+  psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "postgres" <<-EOSQL
+      CREATE DATABASE $POSTGRES_DB;
+      \c $POSTGRES_DB
+      CREATE EXTENSION IF NOT EXISTS vector;
+  EOSQL
+fi
 
-
-
-    # Check if PostgreSQL is running
-
-#    ps -ef | grep postgres > /dev/null 2>&1
-#
-#    if [ $? -eq 0 ]; then
-#
-#        # Install pgvector extension
-#
-#        psql -c "CREATE EXTENSION IF NOT EXISTS pgvector;"
-#
-#    fi
-#
-
-
-echo "🔥 Starting FastAPI server..."
-
-# Run Alembic migrations
-echo "✅ Running Alembic migrations..."
-alembic upgrade head || echo "⚠️ Alembic migration failed, but continuing..."
-
-# Ingest sample documents (doesn't block execution)
-echo "✅ Ingesting sample documents..."
-python -m backend.ingestion_service.sample_ingest || echo "⚠️ Ingestion failed, but continuing..."
-
-
-#exec uvicorn main:app --host 0.0.0.0 --port 8000
+# Start the PostgreSQL server
+exec postgres

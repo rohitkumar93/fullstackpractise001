@@ -1,36 +1,34 @@
 version: '3.8'
 
 services:
-  db:
+  postgres_service:
     image: postgres:15
-    container_name: postgres_db
+    container_name: postgres_container
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data/
     networks:
-      - rag_qna_network
-    command: >
-      bash -c "until pg_isready -h localhost -p 5432; do sleep 1; done &&
-               psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} -c 'CREATE EXTENSION IF NOT EXISTS vector;'"
+      - postgres_network
 
-  backend:
+  rag_qna_service:
     build: .
-    container_name: fast_rag_backend
+    container_name: rag_qna_container
     depends_on:
-      - db
+      - postgres_service
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      DATABASE_URL: ${DATABASE_URL}
     networks:
-      - rag_qna_network
-
+      - postgres_network
+    ports:
+      - '8000:8000'
 networks:
-  rag_qna_network:
+  postgres_network:
     driver: bridge
 
 volumes:
-  pgdata:
+  postgres_data:
