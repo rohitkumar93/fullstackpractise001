@@ -1,6 +1,6 @@
 from rank_bm25 import BM25Okapi
-from backend.database.config import SessionLocal
-from backend.database.models import Document, SelectedDocument
+from ...backend.database.config import SessionLocal
+from ...backend.database.models import Document, SelectedDocument
 from typing import List
 import nltk
 

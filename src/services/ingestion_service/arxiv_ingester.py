@@ -1,7 +1,7 @@
 import feedparser
 import requests
 
-from backend.ingestion_service.service import DocumentIngestionService
+from ..ingestion_service.service import DocumentIngestionService
 
 ARXIV_API_URL = "http://export.arxiv.org/api/query"
 

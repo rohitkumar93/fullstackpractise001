@@ -2,8 +2,15 @@ import uvicorn
 import logging
 import os
 from fastapi import FastAPI, Request
-from sqlalchemy import create_engine, text
-from backend.qna_service.routes import router as qna_router
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql import text
+
+from src.services.qna_service.routes import router as qna_router
+from src.services.ingestion_service.routes import router as ingestion_router
+from src.services.retrieval_service.routes import router as retrieval_router
+from src.services.selection_service.routes import router as selection_router
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -12,18 +19,18 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Initialize the FastAPI app with a descriptive project title.
-# for better API documentation and future scalability.
 app = FastAPI(title="RAG-based Q&A System")
 
-# Database connection
+# ✅ Use async SQLAlchemy engine
 DATABASE_URL = os.getenv("DATABASE_URL")
-engine = create_engine(DATABASE_URL)
+engine = create_async_engine(DATABASE_URL, echo=True, future=True)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, class_=AsyncSession)
 
 @app.on_event("startup")
-def startup():
-    with engine.connect() as connection:
-        connection.execute(text("SELECT 1"))
+async def startup():
+    """Check DB connection on startup."""
+    async with engine.connect() as connection:
+        await connection.execute(text("SELECT 1"))  # ✅ Use `await` for async query
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
@@ -38,18 +45,11 @@ async def log_requests(request: Request, call_next):
     logger.debug(f"📤 Response Status: {response.status_code}")
     return response
 
-
-# Ensure service routers are imported correctly
-from backend.ingestion_service.routes import router as ingestion_router
-from backend.retrieval_service.routes import router as retrieval_router
-from backend.selection_service.routes import router as selection_router
-
-# Segregation of API prefixes and tags for API clarity
+# API Routes
 app.include_router(ingestion_router, prefix="/ingestion", tags=["Document Ingestion"])
 app.include_router(retrieval_router, prefix="/retrieval", tags=["Retrieval & Q&A"])
 app.include_router(selection_router, prefix="/selection", tags=["Document Selection"])
 app.include_router(qna_router, prefix="/qna", tags=["Q&A"])
 
-# Run the application using Uvicorn with a defined host and port.
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

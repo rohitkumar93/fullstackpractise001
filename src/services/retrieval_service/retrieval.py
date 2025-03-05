@@ -1,9 +1,8 @@
 import numpy as np
 from sqlalchemy.sql import text
-from backend.database.config import SessionLocal
-from backend.database.models import SelectedDocument
-from backend.ingestion_service.embedding_generator import EmbeddingGenerator
-
+from ...backend.database.config import SessionLocal
+from ...backend.database.models import SelectedDocument
+from ..ingestion_service.embedding_generator import EmbeddingGenerator
 
 class RetrievalService:
     """

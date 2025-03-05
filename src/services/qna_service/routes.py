@@ -1,7 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends
 import logging
-from backend.qna_service.service import QnAService
-from backend.retrieval_service.retrieval import RetrievalService
+# from services.qna_service.service import QnAService
+# from services.retrieval_service.retrieval import RetrievalService
+
+from .service import QnAService, RetrievalService
 
 logger = logging.getLogger(__name__)
 

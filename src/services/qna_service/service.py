@@ -1,5 +1,9 @@
-from backend.retrieval_service.retrieval import RetrievalService
-from backend.retrieval_service.schemas import QueryRequest, QueryResponse
+# from backend.retrieval_service.retrieval import RetrievalService
+# from backend.retrieval_service.schemas import QueryRequest, QueryResponse
+
+from ..retrieval_service.retrieval import RetrievalService
+from ..retrieval_service.schemas import QueryRequest, QueryResponse
+
 
 class QnAService:
     """

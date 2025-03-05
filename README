@@ -1,8 +1,152 @@
-python -m backend.ingestion_service.arxiv_ingester
-python -m backend.ingestion_service.sample_ingest
+# Coding Exercise: Document Management and RAG-based Q&A Application
 
-docker-compose exec backend python -m backend.ingestion_service.arxiv_ingester
-docker-compose exec backend python -m backend.ingestion_service.sample_ingest
+Candidates are required to build an application that involves backend services and Q&A features powered by a Retrieval-Augmented Generation (RAG) system. The application aims to manage users, documents, and an ingestion process that generates embeddings for document retrieval in a Q&A setting.
+
+You can use mocking services, JSON, TF-IDF, BM25, Scikit-learn, or any other retrieval algorithm to complete the assignment.
+
+## Application Components
+
+### 1. Python Backend (Document Ingestion and RAG-driven Q&A)
+
+**Purpose:**
+Develop a backend application in Python to handle document ingestion, embedding generation, and retrieval-based Q&A (RAG).
+
+**Key APIs:**
+
+- **Document Ingestion API:**
+  - Accepts document data.
+  - Generates embeddings using a Large Language Model (LLM) library.
+  - Stores embeddings for future retrieval.
+
+- **Q&A API:**
+  - Accepts user questions.
+  - Retrieves relevant document embeddings.
+  - Generates answers based on the retrieved content using RAG.
+
+- **Document Selection API:**
+  - Enables users to specify which documents to consider in the RAG-based Q&A process.
+
+**Tools/Libraries (Choose Any):**
+
+- **LLM Models & Libraries:**
+  - Ollama LLaMA 3.18B, LangChain, LlamaIndex, OpenAI API, or Hugging Face Transformers.
+
+- **Database for storing embeddings:**
+  - PostgreSQL (preferred).
+
+- **Asynchronous programming for efficient handling of API requests.**
+
+## Evaluation Criteria
+
+### 1. Backend (Python - Document Ingestion and Q&A)
+
+- **Code Quality:**
+  - Asynchronous programming practices for API performance.
+  - Clear and concise code, with emphasis on readability and maintainability.
+
+- **Data Processing and Storage:**
+  - Efficient embedding generation and storage.
+  - Ability to handle large datasets (e.g., large volumes of documents and embeddings).
+
+- **Q&A API Performance:**
+  - Effective retrieval and generation of answers using RAG.
+  - Latency considerations for prompt response times.
+
+- **Inter-Service Communication:**
+  - Design APIs that allow the backend to trigger ingestion and access Q&A functionality seamlessly.
+
+- **Problem Solving and Scalability:**
+  - Demonstrate strategies for large-scale document ingestion, storage, and efficient retrieval.
+  - Solutions for scaling the RAG-based Q&A system to handle high query volumes.
+
+### 2. End-of-Development Showcase Requirements
+
+- **Design Clarity:**
+  - Show a clear design of classes, APIs, and databases, explaining the rationale behind each design decision.
+  - Discuss non-functional aspects, such as API performance, database integrity, and consistency.
+
+- **Test Automation:**
+  - Showcase functional and performance testing.
+  - Cover positive and negative workflows with good test coverage (70% or higher).
+
+- **Documentation:**
+  - Provide well-documented code and create comprehensive design documentation.
+
+- **3rd-Party Code Understanding:**
+  - Explain the internals of any 3rd-party code used (e.g., libraries for LLM or authentication).
+
+- **Technical Knowledge:**
+  - Demonstrate knowledge of HTTP/HTTPS, security, authentication, authorization, debugging, monitoring, and logging.
+
+- **Advanced Concepts:**
+  - Use design patterns in the code.
+
+- **Test Data Generation:**
+  - Demonstrate skills in generating large amounts of test data to simulate real-world scenarios.
+
+- **Deployment and CI/CD (Applicable to All Components):**
+  - **Dockerization:**
+    - Dockerize each service to make it easily deployable and portable.
+  - **Deployment Scripts:**
+    - Provide deployment scripts to run the application on Docker or Kubernetes, compatible with any cloud provider (AWS, Azure, GCP).
+  - **CI/CD Pipeline:**
+    - Implement a CI/CD pipeline for each component to automate testing, building, and deployment.
+
+- **Deployment Options (Choose Any One):**
+  - Push the code to GitHub.
+  - Create Dockerfiles/Docker images.
+  - Create a README file with detailed instructions for CI/CD workflow or infrastructure workflow.
 
 
-docker-compose exec db psql -U postgres -d rag_qna_db -c "CREATE EXTENSION IF NOT EXISTS vector;"
+
+  TODO:
+  Next Step: Optimize with asyncio.gather (Optional)
+If you want even better concurrency, update process_document to use asyncio.gather() for parallel DB transactions.
+
+
+
+Curl command to test multiple (add ending brace at 144):
+# Start background jobs
+$jobs = 1..10 | ForEach-Object {
+    Start-Job -ScriptBlock {
+        param($i, $startTime)
+
+        # Generate timestamp and random variation
+        $timestamp = (Get-Date -Format "HHmmssfff")  # Unique per request
+        $variation = "random_text_" + (Get-Random -Minimum 1 -Maximum 1000)  # Randomized input
+
+        # Record start time
+        $start = Get-Date
+
+        try {
+            # Send request with slight variations
+            $response = Invoke-RestMethod -Uri "http://127.0.0.1:8000/ingestion/" `
+                                          -Method Post `
+                                          -Headers @{"Content-Type" = "application/json"} `
+                                          -Body (@{
+                                              filename="test_document_$i_$timestamp.txt"
+                                              content="This is test document number $i with $variation at $timestamp."
+                                          } | ConvertTo-Json -Depth 10)
+
+            # Record end time
+            $end = Get-Date
+            $duration = ($end - $start).TotalMilliseconds
+
+            # Output result with timing
+            Write-Output "Request $i started at: $($start - $startTime) | Completed in: $duration ms | Response: $($response | ConvertTo-Json -Compress)"
+        }
+        catch {
+            Write-Output "Request $i failed: $_"
+        }
+
+    } -ArgumentList $_, (Get-Date)
+ 
+
+# Wait for jobs to complete
+$jobs | ForEach-Object { Wait-Job -Id $_.Id }
+
+# Collect and display job output
+$jobs | ForEach-Object { Receive-Job -Id $_.Id }
+
+# Cleanup finished jobs
+$jobs | ForEach-Object { Remove-Job -Id $_.Id }
