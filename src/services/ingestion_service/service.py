@@ -14,14 +14,14 @@ class DocumentIngestionService:
         self.embedding_generator = EmbeddingGenerator()
 
     async def process_document(self, filename: str, content: str | bytes):
-        """
-        Stores document text and generates embeddings asynchronously.
-        """
         if content is None:
             raise ValueError("Document content cannot be None")
 
         if isinstance(content, bytes):
             content = content.decode("utf-8")  # Convert bytes to string
+
+        if not content.strip():
+            raise ValueError("Document content cannot be empty")
 
         async with AsyncSessionLocal() as db:
             async with db.begin():
@@ -30,9 +30,9 @@ class DocumentIngestionService:
                 await db.flush()  # Ensure document.id is available
 
                 # Ensure embedding generation is awaited correctly
-                embedding_vector = await asyncio.to_thread(
-                    lambda: self.embedding_generator.generate_embedding(content)
-                )
+                embedding_vector = await self.embedding_generator.generate_embedding(content)
+
+                print(f"Generated Embedding: {embedding_vector}")  # Debug output
 
                 # Ensure result is valid
                 if not isinstance(embedding_vector, list) or not all(
@@ -41,11 +41,16 @@ class DocumentIngestionService:
                     raise TypeError("Embedding vector must be a list of floats/ints.")
 
                 # Create embedding entry
-                embedding_entry = Embedding(
-                    document_id=document.id, vector=embedding_vector
-                )
+                embedding_entry = Embedding(document_id=document.id, vector=embedding_vector)
                 db.add(embedding_entry)
 
             await db.commit()
 
         return {"message": "Document processed successfully"}
+
+    async def process_documents_batch(self, documents: list[DocumentUploadRequest]):
+        """
+        Processes multiple documents concurrently using asyncio.gather.
+        """
+        tasks = [self.process_document(doc.filename, doc.content) for doc in documents]
+        return await asyncio.gather(*tasks)  # Run all document ingestions in parallel

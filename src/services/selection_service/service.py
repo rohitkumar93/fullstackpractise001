@@ -13,7 +13,7 @@ class DocumentSelectionService:
     """
 
     def __init__(self):
-        self.SessionLocal: sessionmaker = SessionLocal
+        self.SessionLocal: sessionmaker = AsyncSessionLocal
 
     async def get_selected_documents(self) -> DocumentSelectionResponse:
         """
