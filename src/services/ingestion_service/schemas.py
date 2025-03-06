@@ -1,14 +1,17 @@
 from pydantic import BaseModel
+from typing import List
 
+
+# Existing Schema for Single Document
 class DocumentUploadRequest(BaseModel):
-    """
-    Defines the request payload for document uploads.
-    """
     filename: str
-    content: bytes  # TODO: Change to file upload mechanism if needed
+    content: str
+
 
 class DocumentUploadResponse(BaseModel):
-    """
-    Defines the response structure after a document is processed.
-    """
     message: str
+
+
+# ✅ New Schema for Batch Upload
+class BatchUploadRequest(BaseModel):
+    documents: List[DocumentUploadRequest]  # Expecting multiple documents

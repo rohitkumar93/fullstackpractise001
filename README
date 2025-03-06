@@ -97,11 +97,19 @@ Develop a backend application in Python to handle document ingestion, embedding 
   - Create Dockerfiles/Docker images.
   - Create a README file with detailed instructions for CI/CD workflow or infrastructure workflow.
 
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-
-  TODO:
-  Next Step: Optimize with asyncio.gather (Optional)
+TODO:
++Next Step: Optimize with asyncio.gather (Optional)
 If you want even better concurrency, update process_document to use asyncio.gather() for parallel DB transactions.
+
+Tests for Abilitytohandlelargedatasets(e.g.,largevolumesofdocumentsand
+embeddings)
+
+Tests for Demonstratestrategiesforlarge-scaledocumentingestion,storage,and
+efficientretrieval
+
+Create comprehensive design documentation
 
 
 

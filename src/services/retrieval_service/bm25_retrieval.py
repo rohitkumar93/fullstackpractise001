@@ -1,13 +1,13 @@
 from rank_bm25 import BM25Okapi
-from ...backend.database.config import SessionLocal
+from ...backend.database.config import AsyncSessionLocal
 from ...backend.database.models import Document, SelectedDocument
 from typing import List
 import nltk
 
 # nltk.download()
-nltk.download('punkt')
-nltk.download('wordnet')
-nltk.download('omw-1.4')
+nltk.download("punkt")
+nltk.download("wordnet")
+nltk.download("omw-1.4")
 
 
 def tokenize(text: str) -> List[str]:
@@ -38,7 +38,7 @@ class BM25RetrievalService:
 
             docs = db.query(Document).filter(Document.id.in_(selected_ids)).all()
 
-            self.documents = [tokenize(doc.content.decode('utf-8')) for doc in docs]
+            self.documents = [tokenize(doc.content.decode("utf-8")) for doc in docs]
             self.doc_ids = [doc.id for doc in docs]
 
             if self.documents:
@@ -54,7 +54,9 @@ class BM25RetrievalService:
         tokenized_query = tokenize(query)
         scores = self.bm25.get_scores(tokenized_query)
 
-        sorted_indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)
+        sorted_indices = sorted(
+            range(len(scores)), key=lambda i: scores[i], reverse=True
+        )
         top_doc_ids = [self.doc_ids[i] for i in sorted_indices[:top_k]]
 
         return top_doc_ids

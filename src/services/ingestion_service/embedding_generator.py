@@ -1,6 +1,7 @@
 import torch
 from transformers import AutoModel, AutoTokenizer
 
+
 class EmbeddingGenerator:
     """
     Converts text into embeddings using a pre-trained transformer model.
@@ -17,10 +18,13 @@ class EmbeddingGenerator:
         """
         Generates an embedding vector from input text.
         """
-        inputs = self.tokenizer(text, return_tensors="pt", padding=True, truncation=True)
+        inputs = self.tokenizer(
+            text, return_tensors="pt", padding=True, truncation=True
+        )
         with torch.no_grad():
             output = self.model(**inputs).last_hidden_state.mean(dim=1)
         return output.squeeze().tolist()  # Convert tensor to list
+
 
 # Example usage:
 if __name__ == "__main__":

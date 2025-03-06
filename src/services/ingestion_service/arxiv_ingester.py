@@ -5,6 +5,7 @@ from ..ingestion_service.service import DocumentIngestionService
 
 ARXIV_API_URL = "http://export.arxiv.org/api/query"
 
+
 def fetch_arxiv_papers(query: str, max_results: int = 5):
     """
     Fetches papers from ArXiv based on a query.
@@ -15,7 +16,7 @@ def fetch_arxiv_papers(query: str, max_results: int = 5):
         "start": 0,
         "max_results": max_results,
         "sortBy": "relevance",
-        "sortOrder": "descending"
+        "sortOrder": "descending",
     }
 
     response = requests.get(ARXIV_API_URL, params=params)
@@ -31,10 +32,10 @@ def fetch_arxiv_papers(query: str, max_results: int = 5):
             "authors": ", ".join([author.name for author in entry.authors]),
             "abstract": entry.summary,
             "published_date": entry.published,
-            "url": entry.link
+            "url": entry.link,
         }
         papers.append(paper_data)
-        print("paper_data",paper_data)
+        print("paper_data", paper_data)
 
     return papers
 
@@ -44,5 +45,5 @@ def store_papers_in_db(papers):
     service = DocumentIngestionService()  # Initialize service
 
     for paper in papers:
-        print('paper',paper)
+        print("paper", paper)
         service.process_document(filename=paper["title"], content=paper["abstract"])

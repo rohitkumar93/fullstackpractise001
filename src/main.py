@@ -15,7 +15,7 @@ from src.services.selection_service.routes import router as selection_router
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    force=True  # ✅ Forces logging to reconfigure, fixing silent logs
+    force=True,  # ✅ Forces logging to reconfigure, fixing silent logs
 )
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,10 @@ app = FastAPI(title="RAG-based Q&A System")
 # ✅ Use async SQLAlchemy engine
 DATABASE_URL = os.getenv("DATABASE_URL")
 engine = create_async_engine(DATABASE_URL, echo=True, future=True)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, class_=AsyncSession)
+SessionLocal = sessionmaker(
+    autocommit=False, autoflush=False, bind=engine, class_=AsyncSession
+)
+
 
 @app.on_event("startup")
 async def startup():
@@ -32,18 +35,22 @@ async def startup():
     async with engine.connect() as connection:
         await connection.execute(text("SELECT 1"))  # ✅ Use `await` for async query
 
+
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     """
     Middleware to log incoming requests for debugging.
     """
     body = await request.body()
-    logger.debug(f"📥 Incoming Request: {request.method} {request.url} - Body: {body.decode()}")
+    logger.debug(
+        f"📥 Incoming Request: {request.method} {request.url} - Body: {body.decode()}"
+    )
 
     response = await call_next(request)
 
     logger.debug(f"📤 Response Status: {response.status_code}")
     return response
+
 
 # API Routes
 app.include_router(ingestion_router, prefix="/ingestion", tags=["Document Ingestion"])
