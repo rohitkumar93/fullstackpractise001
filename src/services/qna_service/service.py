@@ -22,7 +22,7 @@ class QnAService:
 
         # ✅ Step 2: Fetch actual document texts
         document_texts = await self.retrieval_service.get_document_texts(document_ids)
-        print('document_texts====',document_texts)
+
         # ✅ Step 3: Format documents for LLM input
         doc_texts = "\n\n".join(doc.decode("utf-8") if isinstance(doc, bytes) else str(doc) for doc in document_texts) if document_texts else "No relevant documents found."
 

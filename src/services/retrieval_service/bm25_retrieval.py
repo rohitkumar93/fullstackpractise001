@@ -5,9 +5,9 @@ from typing import List
 import nltk
 
 # nltk.download()
-nltk.download("punkt")
-nltk.download("wordnet")
-nltk.download("omw-1.4")
+# nltk.download("punkt")
+# nltk.download("wordnet")
+# nltk.download("omw-1.4")
 
 
 def tokenize(text: str) -> List[str]:
@@ -28,7 +28,7 @@ class BM25RetrievalService:
 
     def load_documents(self):
         """Loads and tokenizes documents from the database."""
-        db = SessionLocal()
+        db = AsyncSessionLocal()
         try:
             selected_ids = db.query(SelectedDocument.document_id).all()
             selected_ids = [row[0] for row in selected_ids] if selected_ids else []

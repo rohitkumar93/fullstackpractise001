@@ -13,28 +13,32 @@ class DocumentIngestionService:
     def __init__(self):
         self.embedding_generator = EmbeddingGenerator()
 
-    async def process_document(self, filename: str, content: str):
+    async def process_document(self, filename: str, content: str | bytes):
         """
         Stores document text and generates embeddings asynchronously.
         """
-        if isinstance(content, bytes):
-            content = content.decode("utf-8")
+        if content is None:
+            raise ValueError("Document content cannot be None")
 
-        async with SessionLocal() as db:
+        if isinstance(content, bytes):
+            content = content.decode("utf-8")  # Convert bytes to string
+
+        async with AsyncSessionLocal() as db:
             async with db.begin():
                 document = Document(filename=filename, content=content.encode("utf-8"))
                 db.add(document)
                 await db.flush()  # Ensure document.id is available
 
-                # Run embedding generation and database insertion concurrently
-                embedding_task = asyncio.to_thread(
-                    self.embedding_generator.generate_embedding, content
+                # Ensure embedding generation is awaited correctly
+                embedding_vector = await asyncio.to_thread(
+                    lambda: self.embedding_generator.generate_embedding(content)
                 )
-                db_commit_task = db.commit()  # Commit in parallel
 
-                embedding_vector = (
-                    await embedding_task
-                )  # Wait for embedding computation
+                # Ensure result is valid
+                if not isinstance(embedding_vector, list) or not all(
+                    isinstance(val, (float, int)) for val in embedding_vector
+                ):
+                    raise TypeError("Embedding vector must be a list of floats/ints.")
 
                 # Create embedding entry
                 embedding_entry = Embedding(
@@ -42,13 +46,6 @@ class DocumentIngestionService:
                 )
                 db.add(embedding_entry)
 
-            await db_commit_task  # Ensure DB commit happens concurrently
+            await db.commit()
 
         return {"message": "Document processed successfully"}
-
-    async def process_documents_batch(self, documents: list[DocumentUploadRequest]):
-        """
-        Processes multiple documents concurrently using asyncio.gather.
-        """
-        tasks = [self.process_document(doc.filename, doc.content) for doc in documents]
-        return await asyncio.gather(*tasks)  # Run all document ingestions in parallel

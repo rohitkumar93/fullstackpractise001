@@ -1,9 +1,13 @@
 import numpy as np
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import text
-from ...backend.database.config import AsyncSessionLocal
-from ...backend.database.models import SelectedDocument
-from ..ingestion_service.embedding_generator import EmbeddingGenerator
+
+from src.backend.database.config import AsyncSessionLocal
+from src.backend.database.models import SelectedDocument
+from src.services.ingestion_service.embedding_generator import EmbeddingGenerator
+
+
+
 import asyncio
 
 class RetrievalService:
