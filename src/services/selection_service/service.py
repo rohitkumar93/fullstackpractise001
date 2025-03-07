@@ -1,8 +1,8 @@
 from sqlalchemy.future import select
 from sqlalchemy import delete
 from sqlalchemy.orm import sessionmaker
-from ...backend.database.config import AsyncSessionLocal
-from ...backend.database.models import SelectedDocument
+from src.backend.database.config import AsyncSessionLocal
+from src.backend.database.models import SelectedDocument
 from .schemas import DocumentSelectionRequest, DocumentSelectionResponse
 
 
@@ -31,10 +31,9 @@ class DocumentSelectionService:
         Adds document IDs to the selection list.
         """
         async with self.SessionLocal() as session:
-            async with session.begin():
+            async with session.begin():  # This transaction auto-commits on exit
                 for doc_id in request.document_ids:
                     session.add(SelectedDocument(document_id=int(doc_id)))
-            await session.commit()
         return {"message": "Documents selected successfully"}
 
     async def remove_selected_documents(
@@ -44,7 +43,7 @@ class DocumentSelectionService:
         Removes document IDs from the selection list.
         """
         async with self.SessionLocal() as session:
-            async with session.begin():
+            async with session.begin():  # This transaction auto-commits on exit
                 await session.execute(
                     delete(SelectedDocument).where(
                         SelectedDocument.document_id.in_(
@@ -52,5 +51,4 @@ class DocumentSelectionService:
                         )
                     )
                 )
-            await session.commit()
         return {"message": "Documents removed from selection"}

@@ -1,11 +1,11 @@
 from backend.database.config import AsyncSessionLocal
 from backend.database.models import Document, Embedding, SelectedDocument
-from backend.ingestion_service.embedding_generator import EmbeddingGenerator
+from src.services.ingestion_service.embedding_generator import EmbeddingGenerator
 import numpy as np
 
 
 def ingest_sample_documents():
-    db = SessionLocal()
+    db = AsyncSessionLocal()
     embedding_generator = EmbeddingGenerator()
 
     sample_docs = [

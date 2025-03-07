@@ -1,27 +1,29 @@
 import feedparser
-import requests
-
+import httpx
+import asyncio
 from ..ingestion_service.service import DocumentIngestionService
 
 ARXIV_API_URL = "http://export.arxiv.org/api/query"
 
-
-def fetch_arxiv_papers(query: str, max_results: int = 5):
+async def fetch_arxiv_papers(question: str, max_results: int = 5):
     """
     Fetches papers from ArXiv based on a query.
     """
     print("Fetching papers from ArXiv...")
     params = {
-        "search_query": query,
+        "search_query": question,
         "start": 0,
         "max_results": max_results,
         "sortBy": "relevance",
         "sortOrder": "descending",
     }
+    
+    print('params used for fetching papers', params)
 
-    response = requests.get(ARXIV_API_URL, params=params)
-    if response.status_code != 200:
-        raise Exception("Failed to fetch data from ArXiv")
+    async with httpx.AsyncClient() as client:
+        response = await client.get(ARXIV_API_URL, params=params)
+        if response.status_code != 200:
+            raise Exception("Failed to fetch data from ArXiv")
 
     feed = feedparser.parse(response.text)
 
@@ -39,11 +41,18 @@ def fetch_arxiv_papers(query: str, max_results: int = 5):
 
     return papers
 
-
-def store_papers_in_db(papers):
-    print("Fetching papers from ArXiv...")
+async def store_papers_in_db(papers):
+    print("Storing papers in the database...")
     service = DocumentIngestionService()  # Initialize service
 
     for paper in papers:
         print("paper", paper)
-        service.process_document(filename=paper["title"], content=paper["abstract"])
+        await service.process_document(filename=paper["title"], content=paper["abstract"])
+
+# Example usage
+async def main():
+    papers = await fetch_arxiv_papers(question="machine learning", max_results=5)
+    await store_papers_in_db(papers)
+
+if __name__ == "__main__":
+    asyncio.run(main())

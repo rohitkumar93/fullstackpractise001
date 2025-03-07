@@ -17,7 +17,7 @@ async def ask_question(request: QueryRequest):
     """
     try:
         # Retrieve relevant documents
-        relevant_docs = await retrieval_service.retrieve_relevant_docs(request.query, request.top_k)
+        relevant_docs = await retrieval_service.retrieve_relevant_docs(request.question, request.top_k)
 
         if not relevant_docs:
             raise HTTPException(status_code=404, detail="No relevant documents found.")
@@ -25,7 +25,7 @@ async def ask_question(request: QueryRequest):
         # ✅ Await the async function call
         answer = await qna_service.get_answer(request)
 
-        return QueryResponse(question=request.query, answer=str(answer))
+        return QueryResponse(question=request.question, answer=str(answer))
 
 
     except Exception as e:

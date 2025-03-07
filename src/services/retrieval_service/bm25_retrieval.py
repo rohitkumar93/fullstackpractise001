@@ -1,6 +1,6 @@
 from rank_bm25 import BM25Okapi
-from ...backend.database.config import AsyncSessionLocal
-from ...backend.database.models import Document, SelectedDocument
+from src.backend.database.config import AsyncSessionLocal
+from src.backend.database.models import Document, SelectedDocument
 from typing import List
 import nltk
 
@@ -46,12 +46,12 @@ class BM25RetrievalService:
         finally:
             db.close()
 
-    def retrieve_relevant_docs(self, query: str, top_k: int = 5) -> List[int]:
+    def retrieve_relevant_docs(self, question: str, top_k: int = 5) -> List[int]:
         """Retrieves top-k relevant documents using BM25 scoring."""
-        if not self.bm25:
+        if not self.bm25 or not question.strip():
             return []
 
-        tokenized_query = tokenize(query)
+        tokenized_query = tokenize(question)
         scores = self.bm25.get_scores(tokenized_query)
 
         sorted_indices = sorted(

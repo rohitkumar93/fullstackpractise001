@@ -14,7 +14,7 @@ router = APIRouter()
 
 # ✅ Define a Pydantic model for request validation
 class QueryRequest(BaseModel):
-    query: str
+    question: str
     top_k: int = 5  # Default value
 
 
@@ -30,7 +30,7 @@ async def retrieve_documents(request: QueryRequest, service: RetrievalService = 
     logger.debug(f"Received Request: {request}")
     print(f"✅ Received Request: {request}")  # Debugging print
 
-    results = await service.retrieve_relevant_docs(request.query, request.top_k)
+    results = await service.retrieve_relevant_docs(request.question, request.top_k)
 
     # ✅ Debug: Print the retrieved documents
     logger.debug(f"Retrieved Documents (Embedding): {results}")
@@ -52,7 +52,7 @@ async def retrieve_documents_bm25(
     logger.debug(f"Received Request (BM25): {request}")
     print(f"✅ Received Request (BM25): {request}")  # Debugging print
 
-    results = await service.retrieve_relevant_docs(request.query, request.top_k)
+    results = await service.retrieve_relevant_docs(request.question, request.top_k)
 
     # ✅ Debug: Print the retrieved documents
     logger.debug(f"Retrieved Documents (BM25): {results}")

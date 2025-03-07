@@ -1,6 +1,6 @@
 import pytest
 import asyncio
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 from src.main import app
 
 @pytest.fixture(scope="session")
@@ -13,5 +13,6 @@ def event_loop():
 @pytest.fixture
 async def async_client():
     """Fixture for creating an HTTP client for API testing."""
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
         yield client
