@@ -1,117 +1,31 @@
 # Coding Exercise: Document Management and RAG-based Q&A Application
 
-Candidates are required to build an application that involves backend services and Q&A features powered by a Retrieval-Augmented Generation (RAG) system. The application aims to manage users, documents, and an ingestion process that generates embeddings for document retrieval in a Q&A setting.
 
-You can use mocking services, JSON, TF-IDF, BM25, Scikit-learn, or any other retrieval algorithm to complete the assignment.
-
-## Application Components
-
-### 1. Python Backend (Document Ingestion and RAG-driven Q&A)
-
-**Purpose:**
-Develop a backend application in Python to handle document ingestion, embedding generation, and retrieval-based Q&A (RAG).
-
-**Key APIs:**
-
-- **Document Ingestion API:**
-  - Accepts document data.
-  - Generates embeddings using a Large Language Model (LLM) library.
-  - Stores embeddings for future retrieval.
-
-- **Q&A API:**
-  - Accepts user questions.
-  - Retrieves relevant document embeddings.
-  - Generates answers based on the retrieved content using RAG.
-
-- **Document Selection API:**
-  - Enables users to specify which documents to consider in the RAG-based Q&A process.
-
-**Tools/Libraries (Choose Any):**
-
-- **LLM Models & Libraries:**
-  - Ollama LLaMA 3.18B, LangChain, LlamaIndex, OpenAI API, or Hugging Face Transformers.
-
-- **Database for storing embeddings:**
-  - PostgreSQL (preferred).
-
-- **Asynchronous programming for efficient handling of API requests.**
-
-## Evaluation Criteria
-
-### 1. Backend (Python - Document Ingestion and Q&A)
-
-- **Code Quality:**
-  - Asynchronous programming practices for API performance.
-  - Clear and concise code, with emphasis on readability and maintainability.
-
-- **Data Processing and Storage:**
-  - Efficient embedding generation and storage.
-  - Ability to handle large datasets (e.g., large volumes of documents and embeddings).
-
-- **Q&A API Performance:**
-  - Effective retrieval and generation of answers using RAG.
-  - Latency considerations for prompt response times.
-
-- **Inter-Service Communication:**
-  - Design APIs that allow the backend to trigger ingestion and access Q&A functionality seamlessly.
-
-- **Problem Solving and Scalability:**
-  - Demonstrate strategies for large-scale document ingestion, storage, and efficient retrieval.
-  - Solutions for scaling the RAG-based Q&A system to handle high query volumes.
-
-### 2. End-of-Development Showcase Requirements
-
-- **Design Clarity:**
-  - Show a clear design of classes, APIs, and databases, explaining the rationale behind each design decision.
-  - Discuss non-functional aspects, such as API performance, database integrity, and consistency.
-
-- **Test Automation:**
-  - Showcase functional and performance testing.
-  - Cover positive and negative workflows with good test coverage (70% or higher).
-
-- **Documentation:**
-  - Provide well-documented code and create comprehensive design documentation.
-
-- **3rd-Party Code Understanding:**
-  - Explain the internals of any 3rd-party code used (e.g., libraries for LLM or authentication).
-
-- **Technical Knowledge:**
-  - Demonstrate knowledge of HTTP/HTTPS, security, authentication, authorization, debugging, monitoring, and logging.
-
-- **Advanced Concepts:**
-  - Use design patterns in the code.
-
-- **Test Data Generation:**
-  - Demonstrate skills in generating large amounts of test data to simulate real-world scenarios.
-
-- **Deployment and CI/CD (Applicable to All Components):**
-  - **Dockerization:**
-    - Dockerize each service to make it easily deployable and portable.
-  - **Deployment Scripts:**
-    - Provide deployment scripts to run the application on Docker or Kubernetes, compatible with any cloud provider (AWS, Azure, GCP).
-  - **CI/CD Pipeline:**
-    - Implement a CI/CD pipeline for each component to automate testing, building, and deployment.
-
-- **Deployment Options (Choose Any One):**
-  - Push the code to GitHub.
-  - Create Dockerfiles/Docker images.
-  - Create a README file with detailed instructions for CI/CD workflow or infrastructure workflow.
-
+Used Ruff for lint
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-TODO:
-+Next Step: Optimize with asyncio.gather (Optional)
-If you want even better concurrency, update process_document to use asyncio.gather() for parallel DB transactions.
+yet TODO:
+Next Step: Optimize with asyncio.gather for each operation
 
-Tests for Abilitytohandlelargedatasets(e.g.,largevolumesofdocumentsand
-embeddings)
 
-Tests for Demonstratestrategiesforlarge-scaledocumentingestion,storage,and
+Added two ingesters for easy sample data creation
+
+I have used OpenAI client(free tier) for constructing final answers from retrieval
+
+Tests for Ability to handle large dataset (Tested with large requests, tested with mutliple requests at the same time, not yet tested Large Multiple requests)
+
+Tests for Demonstrating strategies for large-scaledocument ingestion,storage,and
 efficientretrieval
 
 Create comprehensive design documentation
 
-additional coverage for edge cases like handling timeouts or rate limiting
+Additional coverage for edge cases like handling timeouts or rate limiting
+
+Optimize Dockerization
+
+Add Cloud deployment instructions
+
+Much more work can be done!
 
 
 Curl command to test multiple (add ending brace at 144):

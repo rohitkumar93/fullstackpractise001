@@ -17,12 +17,10 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    networks:
-      - postgres_network
 
   rag_qna_service:
     build: .
-    command: bash -c "cd backend/database/migrations && alembic upgrade head && cd .. && uvicorn main:app --host 0.0.0.0 --port 8000"
+    command: bash -c "cd src && alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"
     ports:
       - "8000:8000"
     depends_on:
@@ -30,12 +28,6 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: ${DATABASE_URL}
-    networks:
-      - postgres_network
-
-networks:
-  postgres_network:
-    driver: bridge
 
 volumes:
   postgres_data:

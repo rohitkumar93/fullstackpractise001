@@ -11,6 +11,9 @@ function wait_for_postgres() {
   done
 }
 
+# Wait for PostgreSQL to be ready
+wait_for_postgres
+
 # Check if the database exists
 echo "Checking if the database exists..."
 DB_EXISTS=$(psql -U "$POSTGRES_USER" -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$POSTGRES_DB'")
@@ -24,11 +27,11 @@ if [ "$DB_EXISTS" != "1" ]; then
       CREATE EXTENSION IF NOT EXISTS vector;
   EOSQL
 else
-  echo "Database already exists."
+  echo "Database already exists. Enabling pgvector extension..."
+  psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+      CREATE EXTENSION IF NOT EXISTS vector;
+  EOSQL
 fi
-
-# Wait for PostgreSQL to be ready
-wait_for_postgres
 
 # Run Alembic migrations
 echo "Running Alembic migrations..."
@@ -36,10 +39,6 @@ alembic upgrade head || {
   echo "Alembic migrations failed. Exiting."
   exit 1
 }
-
-# Start the PostgreSQL server in the background
-echo "Starting PostgreSQL server..."
-postgres &
 
 # Start the FastAPI application
 echo "Starting FastAPI application..."
