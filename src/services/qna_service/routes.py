@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException
 from .service import QnAService, RetrievalService
 import logging
 from .schemas import QueryRequest, QueryResponse
@@ -10,6 +10,7 @@ router = APIRouter()
 retrieval_service = RetrievalService()
 qna_service = QnAService()
 
+
 @router.post("/ask", response_model=QueryResponse)
 async def ask_question(request: QueryRequest):
     """
@@ -17,7 +18,9 @@ async def ask_question(request: QueryRequest):
     """
     try:
         # Retrieve relevant documents
-        relevant_docs = await retrieval_service.retrieve_relevant_docs(request.question, request.top_k)
+        relevant_docs = await retrieval_service.retrieve_relevant_docs(
+            request.question, request.top_k
+        )
 
         if not relevant_docs:
             raise HTTPException(status_code=404, detail="No relevant documents found.")
@@ -26,7 +29,6 @@ async def ask_question(request: QueryRequest):
         answer = await qna_service.get_answer(request)
 
         return QueryResponse(question=request.question, answer=str(answer))
-
 
     except Exception as e:
         logger.error(f"Error processing question: {str(e)}", exc_info=True)

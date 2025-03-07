@@ -40,7 +40,9 @@ async def ingest_documents_batch(
 
 # ArXiv Ingestion
 @router.post("/ingest_from_arxiv")
-async def ingest_papers(question: str = "negative impacts of PC gaming", limit: int = 5):
+async def ingest_papers(
+    question: str = "negative impacts of PC gaming", limit: int = 5
+):
     """
     Fetches papers from ArXiv and stores them in the database.
     """

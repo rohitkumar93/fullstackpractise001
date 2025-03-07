@@ -2,6 +2,7 @@ import asyncio
 import torch
 from transformers import AutoTokenizer, AutoModel
 
+
 class EmbeddingGenerator:
     """
     Converts text into embeddings using a pre-trained transformer model.
@@ -18,6 +19,7 @@ class EmbeddingGenerator:
         """
         Generates an embedding vector from input text.
         """
+
         def _generate_embedding_sync(text: str):
             inputs = self.tokenizer(
                 text, return_tensors="pt", padding=True, truncation=True

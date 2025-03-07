@@ -32,7 +32,9 @@ class DocumentIngestionService:
                 await db.flush()  # Ensure document.id is available
 
                 # Ensure embedding generation is awaited correctly
-                embedding_vector = await self.embedding_generator.generate_embedding(content)
+                embedding_vector = await self.embedding_generator.generate_embedding(
+                    content
+                )
 
                 # print(f"Generated Embedding: {embedding_vector}")  # Debug output
 
@@ -43,7 +45,9 @@ class DocumentIngestionService:
                     raise TypeError("Embedding vector must be a list of floats/ints.")
 
                 # Create embedding entry
-                embedding_entry = Embedding(document_id=document.id, vector=embedding_vector)
+                embedding_entry = Embedding(
+                    document_id=document.id, vector=embedding_vector
+                )
                 db.add(embedding_entry)
 
             await db.commit()

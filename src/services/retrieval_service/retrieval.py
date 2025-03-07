@@ -1,9 +1,6 @@
-import numpy as np
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import text
 from src.backend.database.config import AsyncSessionLocal
 from src.services.ingestion_service.embedding_generator import EmbeddingGenerator
-import asyncio
 
 
 class RetrievalService:
@@ -21,10 +18,10 @@ class RetrievalService:
         async with AsyncSessionLocal() as db:
             async with db.begin():
                 # ✅ Generate embedding in a separate thread
-                query_embedding = await self.embedding_generator.generate_embedding(question)
-   
-             
-                
+                query_embedding = await self.embedding_generator.generate_embedding(
+                    question
+                )
+
                 # Handle invalid embedding
                 if query_embedding is None:
                     return []
@@ -32,9 +29,11 @@ class RetrievalService:
                 # ✅ Convert NumPy array to PostgreSQL-compatible format
                 query_embedding_str = "[" + ",".join(map(str, query_embedding)) + "]"
                 # ✅ Fetch selected document IDs asynchronously
-                selected_ids_result = await db.execute(text("SELECT document_id FROM selected_documents;"))
-                print('selected_ids_result', vars(selected_ids_result))
-                
+                selected_ids_result = await db.execute(
+                    text("SELECT document_id FROM selected_documents;")
+                )
+                print("selected_ids_result", vars(selected_ids_result))
+
                 selected_ids = selected_ids_result.scalars().all()
                 # selected_ids = (await selected_ids_result.scalars()).all()
 
@@ -60,11 +59,11 @@ class RetrievalService:
                 )
 
                 # document_ids = (await results.scalars()).all()\
-                print('debug results', vars(results))
+                print("debug results", vars(results))
                 # document_ids = list(await results.scalars())
                 document_ids = list(results.scalars())
 
-                print('document_ids', document_ids)
+                print("document_ids", document_ids)
                 return document_ids
 
     async def get_document_texts(self, document_ids: list[int]):
@@ -76,10 +75,10 @@ class RetrievalService:
 
         async with AsyncSessionLocal() as db:
             async with db.begin():
-                question = text("SELECT content FROM documents WHERE id = ANY(:document_ids);")
+                question = text(
+                    "SELECT content FROM documents WHERE id = ANY(:document_ids);"
+                )
                 results = await db.execute(question, {"document_ids": document_ids})
                 # return (await results.scalars()).all()
-                print('debug results', vars(results))
+                print("debug results", vars(results))
                 return results.scalars().all()
-                
-

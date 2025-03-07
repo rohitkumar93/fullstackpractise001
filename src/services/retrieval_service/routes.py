@@ -20,7 +20,9 @@ class QueryRequest(BaseModel):
 
 # ✅ Embedding-based retrieval route
 @router.post("/search/")
-async def retrieve_documents(request: QueryRequest, service: RetrievalService = Depends()):
+async def retrieve_documents(
+    request: QueryRequest, service: RetrievalService = Depends()
+):
     """
     Accepts a user query, retrieves the most relevant documents using embeddings,
     and returns matching document contents.

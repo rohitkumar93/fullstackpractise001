@@ -2,17 +2,22 @@ import pytest
 from unittest.mock import patch, MagicMock
 from src.services.retrieval_service.bm25_retrieval import BM25RetrievalService
 
+
 @pytest.fixture
 def bm25_service():
     """Fixture to initialize BM25RetrievalService with mocked data."""
-    with patch("src.services.retrieval_service.bm25_retrieval.AsyncSessionLocal") as mock_db:
+    with patch(
+        "src.services.retrieval_service.bm25_retrieval.AsyncSessionLocal"
+    ) as mock_db:
         # Mock the database session and query results
         mock_session = MagicMock()
         mock_db.return_value = mock_session
 
         # Mock selected document IDs
         mock_selected_ids = [1, 2, 3]
-        mock_session.query.return_value.all.return_value = [(id,) for id in mock_selected_ids]
+        mock_session.query.return_value.all.return_value = [
+            (id,) for id in mock_selected_ids
+        ]
 
         # Mock documents
         mock_docs = [
@@ -26,11 +31,13 @@ def bm25_service():
         service.load_documents()
         return service
 
+
 def test_load_documents(bm25_service):
     """Test loading and tokenizing documents from the database."""
     assert len(bm25_service.documents) == 3
     assert len(bm25_service.doc_ids) == 3
     assert bm25_service.bm25 is not None
+
 
 def test_retrieve_relevant_docs(bm25_service):
     """Test retrieving relevant documents using BM25."""
@@ -40,9 +47,12 @@ def test_retrieve_relevant_docs(bm25_service):
     assert len(result) == top_k
     assert result == [1, 2]  # Assuming the first two documents are most relevant
 
+
 def test_retrieve_relevant_docs_no_documents():
     """Test retrieving relevant documents when no documents are loaded."""
-    with patch("src.services.retrieval_service.bm25_retrieval.AsyncSessionLocal") as mock_db:
+    with patch(
+        "src.services.retrieval_service.bm25_retrieval.AsyncSessionLocal"
+    ) as mock_db:
         mock_session = MagicMock()
         mock_db.return_value = mock_session
 
@@ -58,6 +68,7 @@ def test_retrieve_relevant_docs_no_documents():
         assert len(result) == 0
         assert result == []
 
+
 def test_retrieve_relevant_docs_empty_query(bm25_service):
     """Test retrieving relevant documents with an empty query."""
     query = ""
@@ -66,15 +77,20 @@ def test_retrieve_relevant_docs_empty_query(bm25_service):
     assert len(result) == 0
     assert result == []
 
+
 def test_retrieve_relevant_docs_no_bm25_model():
     """Test retrieving relevant documents when BM25 model is not initialized."""
-    with patch("src.services.retrieval_service.bm25_retrieval.AsyncSessionLocal") as mock_db:
+    with patch(
+        "src.services.retrieval_service.bm25_retrieval.AsyncSessionLocal"
+    ) as mock_db:
         mock_session = MagicMock()
         mock_db.return_value = mock_session
 
         # Mock selected document IDs
         mock_selected_ids = [1, 2, 3]
-        mock_session.query.return_value.all.return_value = [(id,) for id in mock_selected_ids]
+        mock_session.query.return_value.all.return_value = [
+            (id,) for id in mock_selected_ids
+        ]
 
         # Mock documents
         mock_docs = [

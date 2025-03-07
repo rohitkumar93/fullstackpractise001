@@ -3,12 +3,14 @@ import asyncio
 from httpx import AsyncClient, ASGITransport
 from src.main import app
 
+
 @pytest.fixture(scope="session")
 def event_loop():
     """Ensure a new event loop is used for Windows compatibility."""
     loop = asyncio.new_event_loop()
     yield loop
     loop.close()
+
 
 @pytest.fixture
 async def async_client():

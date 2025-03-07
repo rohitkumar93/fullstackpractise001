@@ -5,6 +5,7 @@ from ..ingestion_service.service import DocumentIngestionService
 
 ARXIV_API_URL = "http://export.arxiv.org/api/query"
 
+
 async def fetch_arxiv_papers(question: str, max_results: int = 5):
     """
     Fetches papers from ArXiv based on a query.
@@ -17,8 +18,8 @@ async def fetch_arxiv_papers(question: str, max_results: int = 5):
         "sortBy": "relevance",
         "sortOrder": "descending",
     }
-    
-    print('params used for fetching papers', params)
+
+    print("params used for fetching papers", params)
 
     async with httpx.AsyncClient() as client:
         response = await client.get(ARXIV_API_URL, params=params)
@@ -41,18 +42,23 @@ async def fetch_arxiv_papers(question: str, max_results: int = 5):
 
     return papers
 
+
 async def store_papers_in_db(papers):
     print("Storing papers in the database...")
     service = DocumentIngestionService()  # Initialize service
 
     for paper in papers:
         print("paper", paper)
-        await service.process_document(filename=paper["title"], content=paper["abstract"])
+        await service.process_document(
+            filename=paper["title"], content=paper["abstract"]
+        )
+
 
 # Example usage
 async def main():
     papers = await fetch_arxiv_papers(question="machine learning", max_results=5)
     await store_papers_in_db(papers)
+
 
 if __name__ == "__main__":
     asyncio.run(main())
