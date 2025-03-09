@@ -20,15 +20,15 @@ The OpenAI client being used, does have some general knowledge already. My inten
 
 
 
+![image](https://github.com/user-attachments/assets/1100f86e-d04b-44c6-be69-896d09b3d09e)
 
 
-![Screenshot 2025-03-10 023752](https://github.com/user-attachments/assets/006d7249-b8ae-48c6-8897-e296d011a437)
-
-![Screenshot 2025-03-10 023810](https://github.com/user-attachments/assets/ee74c4d2-02a0-42c4-9ae1-6e58b2f0cee6)
 
 ![Screenshot 2025-03-10 022801](https://github.com/user-attachments/assets/3688e865-2efb-4382-a2c0-8a6f31068872)
 
-![image](https://github.com/user-attachments/assets/1100f86e-d04b-44c6-be69-896d09b3d09e)
+
+![Screenshot 2025-03-10 023810](https://github.com/user-attachments/assets/ee74c4d2-02a0-42c4-9ae1-6e58b2f0cee6)
+
 
 
 
