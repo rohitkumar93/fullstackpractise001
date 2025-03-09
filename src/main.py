@@ -1,11 +1,11 @@
 import uvicorn
 import logging
-import os
 from fastapi import FastAPI, Request
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import text
+from src.config import DATABASE_URL
 
 from src.services.qna_service.routes import router as qna_router
 from src.services.ingestion_service.routes import router as ingestion_router
@@ -22,7 +22,6 @@ logger = logging.getLogger(__name__)
 app = FastAPI(title="RAG-based Q&A System")
 
 # ✅ Use async SQLAlchemy engine
-DATABASE_URL = os.getenv("DATABASE_URL")
 engine = create_async_engine(DATABASE_URL, echo=True, future=True)
 SessionLocal = sessionmaker(
     autocommit=False, autoflush=False, bind=engine, class_=AsyncSession

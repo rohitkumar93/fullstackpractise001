@@ -32,7 +32,7 @@ class RetrievalService:
                 selected_ids_result = await db.execute(
                     text("SELECT document_id FROM selected_documents;")
                 )
-                print("selected_ids_result", vars(selected_ids_result))
+
 
                 selected_ids = selected_ids_result.scalars().all()
                 # selected_ids = (await selected_ids_result.scalars()).all()
@@ -59,11 +59,10 @@ class RetrievalService:
                 )
 
                 # document_ids = (await results.scalars()).all()\
-                print("debug results", vars(results))
+
                 # document_ids = list(await results.scalars())
                 document_ids = list(results.scalars())
 
-                print("document_ids", document_ids)
                 return document_ids
 
     async def get_document_texts(self, document_ids: list[int]):
@@ -80,5 +79,4 @@ class RetrievalService:
                 )
                 results = await db.execute(question, {"document_ids": document_ids})
                 # return (await results.scalars()).all()
-                print("debug results", vars(results))
                 return results.scalars().all()

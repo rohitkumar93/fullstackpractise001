@@ -1,8 +1,8 @@
 from src.services.ingestion_service.schemas import DocumentUploadRequest
-from ..ingestion_service.embedding_generator import EmbeddingGenerator
-from ...backend.database.config import AsyncSessionLocal
-from ...backend.database.models import Document, Embedding
 
+from src.services.ingestion_service.embedding_generator import EmbeddingGenerator
+from src.backend.database.config import AsyncSessionLocal
+from src.backend.database.models import Document, Embedding
 
 import asyncio
 
@@ -35,9 +35,7 @@ class DocumentIngestionService:
                 embedding_vector = await self.embedding_generator.generate_embedding(
                     content
                 )
-
-                # print(f"Generated Embedding: {embedding_vector}")  # Debug output
-
+                
                 # Ensure result is valid
                 if not isinstance(embedding_vector, list) or not all(
                     isinstance(val, (float, int)) for val in embedding_vector

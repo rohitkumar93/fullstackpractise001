@@ -30,7 +30,6 @@ async def retrieve_documents(
 
     # ✅ Debug: Print the received request
     logger.debug(f"Received Request: {request}")
-    print(f"✅ Received Request: {request}")  # Debugging print
 
     results = await service.retrieve_relevant_docs(request.question, request.top_k)
 
@@ -52,8 +51,7 @@ async def retrieve_documents_bm25(
 
     # ✅ Debug: Print the received request
     logger.debug(f"Received Request (BM25): {request}")
-    print(f"✅ Received Request (BM25): {request}")  # Debugging print
-
+   
     results = await service.retrieve_relevant_docs(request.question, request.top_k)
 
     # ✅ Debug: Print the retrieved documents

@@ -93,9 +93,6 @@ async def test_get_document_texts():
         # Call the method with the correct arguments (document_ids)
         document_texts = await retrieval_service.get_document_texts([1, 2, 3])
 
-    # Debugging
-    print("Final document_texts:", document_texts)
-
     # Assert the result
     assert document_texts == ["doc1", "doc2", "doc3"]  # This should now pass
 

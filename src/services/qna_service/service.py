@@ -1,5 +1,6 @@
 import openai
 import os
+from dotenv import load_dotenv
 from src.services.retrieval_service.retrieval import RetrievalService
 from src.services.qna_service.schemas import QueryRequest, QueryResponse
 
@@ -8,22 +9,27 @@ class QnAService:
     """
     Handles Q&A functionality by retrieving relevant documents and generating an answer.
     """
+    
+    
+    
 
     def __init__(self):
+        load_dotenv()  # ✅ Explicitly load .env file (only needed for local development)
+        
         self.retrieval_service = RetrievalService()
-        self.openai_api_key = os.getenv(
-            "OPENAI_API_KEY"
-        )  # ✅ Store API key in environment variables
-        if not self.openai_api_key:
-            raise ValueError("OpenAI API key is missing")
+        self.openai_api_key = os.getenv("OPENAI_API_KEY")
 
+        if not self.openai_api_key:
+            raise ValueError("❌ OpenAI API key is missing! Make sure it is securely set in the environment. This project cannot run without it.")
+
+        openai.api_key = self.openai_api_key  # ✅ Set the API key for OpenAI usage
+    
     async def get_answer(self, request: QueryRequest) -> QueryResponse:
         """
         Retrieves the most relevant documents and generates an answer
         using OpenAI GPT API.
         """
         # ✅ Step 1: Retrieve relevant document IDs
-        print("DEBUG: Retrieving relevant documents...", request)
         document_ids = await self.retrieval_service.retrieve_relevant_docs(
             request.question, request.top_k
         )
@@ -38,7 +44,7 @@ class QnAService:
                 for doc in document_texts
             )
             if document_texts
-            else "No relevant documents found."
+            else "No relevant documents found. The database does not have enough information to answer the question. Please ingest some data first."
         )
 
         # ✅ Step 4: Call OpenAI API to generate answer
@@ -60,6 +66,5 @@ class QnAService:
 
         # ✅ Step 5: Extract and return the generated answer
         answer = response["choices"][0]["message"]["content"]
-        print("DEBUG: Answer received from OpenAI:", answer)
 
         return QueryResponse(answer=answer)

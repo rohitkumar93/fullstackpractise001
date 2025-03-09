@@ -86,7 +86,6 @@ async def test_end_to_end_flow_with_multiple_documents(async_client: AsyncClient
         retrieve_response = await async_client.post(
             "/retrieval/search/", json={"question": "AI", "top_k": 3}
         )
-        print("debugging", retrieve_response.json())
         assert retrieve_response.status_code == 200
         assert "documents" in retrieve_response.json()
         assert len(retrieve_response.json()["documents"]) > 0
@@ -132,7 +131,6 @@ async def test_end_to_end_flow_with_arxiv_papers(async_client: AsyncClient):
         retrieve_response = await async_client.post(
             "/retrieval/search/", json={"question": "machine learning", "top_k": 2}
         )
-        print("debugging info", retrieve_response)  # Log the incoming request payload
         assert retrieve_response.status_code == 200
         assert "documents" in retrieve_response.json()
         assert len(retrieve_response.json()["documents"]) > 0

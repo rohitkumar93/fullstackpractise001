@@ -62,13 +62,7 @@ def ingest_sample_documents():
         db.add(selected_doc)
         db.commit()
 
-        print(
-            f"✅ Added & Selected Document: {document.filename} | ID: {document.id} | Vector Size: {len(embedding_vector)}"
-        )
-
     db.close()
-    print("✅ Sample documents have been added and selected for retrieval!")
-
 
 if __name__ == "__main__":
     ingest_sample_documents()

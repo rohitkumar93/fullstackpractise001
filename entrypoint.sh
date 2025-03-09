@@ -1,45 +1,21 @@
 #!/bin/bash
-set -e
-
-echo "Running entrypoint..."
-
-# Function to check if PostgreSQL is ready
-function wait_for_postgres() {
-  until pg_isready -h postgres_service -p 5432 -U "$POSTGRES_USER"; do
-    echo "Waiting for PostgreSQL to be ready..."
-    sleep 2
-  done
-}
 
 # Wait for PostgreSQL to be ready
-wait_for_postgres
+# echo "Waiting for PostgreSQL..."
+# while ! pg_isready -h localhost -p 5432 -U postgres; do
+#   sleep 1
+# done
 
-# Check if the database exists
-echo "Checking if the database exists..."
-DB_EXISTS=$(psql -U "$POSTGRES_USER" -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$POSTGRES_DB'")
+# echo "PostgreSQL is ready!"
 
-# Create the database if it doesn't exist
-if [ "$DB_EXISTS" != "1" ]; then
-  echo "Database does not exist. Creating database and installing pgvector extension..."
-  psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "postgres" <<-EOSQL
-      CREATE DATABASE $POSTGRES_DB;
-      \c $POSTGRES_DB
-      CREATE EXTENSION IF NOT EXISTS vector;
-  EOSQL
-else
-  echo "Database already exists. Enabling pgvector extension..."
-  psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
-      CREATE EXTENSION IF NOT EXISTS vector;
-  EOSQL
-fi
+# Install the pgvector extension (if not exists) (Update: Now being handled by init.sql)
+# echo "Creating pgvector extension..."
+# psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "CREATE EXTENSION IF NOT EXISTS vector;"
 
-# Run Alembic migrations
-echo "Running Alembic migrations..."
-alembic upgrade head || {
-  echo "Alembic migrations failed. Exiting."
-  exit 1
-}
+# Apply Alembic migrations
+# echo "Running Alembic migrations..."
+# alembic upgrade head (Update: Now being handled by docker-compose)
 
-# Start the FastAPI application
-echo "Starting FastAPI application..."
-exec uvicorn main:app --host 0.0.0.0 --port 8000
+# Start FastAPI
+# echo "Starting FastAPI application..."
+# exec uvicorn app.main:app --host 0.0.0.0 --port 8000
