@@ -20,12 +20,17 @@ The OpenAI client being used, does have some general knowledge already. My inten
 
 
 
-![image](https://github.com/user-attachments/assets/1100f86e-d04b-44c6-be69-896d09b3d09e)
 
+First we ask a non general knowledge question, and it replies it does not know.
 
 
 ![Screenshot 2025-03-10 022801](https://github.com/user-attachments/assets/3688e865-2efb-4382-a2c0-8a6f31068872)
 
+Then we feed/ingest that data in the database.
+
+![image](https://github.com/user-attachments/assets/1100f86e-d04b-44c6-be69-896d09b3d09e)
+
+Now the AI knows that new information!
 
 ![Screenshot 2025-03-10 023810](https://github.com/user-attachments/assets/ee74c4d2-02a0-42c4-9ae1-6e58b2f0cee6)
 
