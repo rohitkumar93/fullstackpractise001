@@ -12,6 +12,28 @@ The Document Management System is a FastAPI-based web application that allows us
 - **Retrieve Document**: Fetch a Document's Vector to see if the question that has been asked, has relevant vectors or not.
 - **OpenAI QNA**: Once a question has been asked, the OpenAI client will search through the vectors given  in the selected documents, and formulate an answer using LLM to create a meaningful answer.
 
+
+
+The OpenAI client being used, does have some general knowledge already. My intention was to use a good LLM so it can formulate and create meaningful sentences. Unfortunately, to test if the retrieval and ingestion services work, we have to ask questions that the OpenAI does not already know, so we can assert that it is indeed learning from the documentation we are providing.e.g.
+
+ 
+
+
+
+
+
+![Screenshot 2025-03-10 023752](https://github.com/user-attachments/assets/006d7249-b8ae-48c6-8897-e296d011a437)
+
+![Screenshot 2025-03-10 023810](https://github.com/user-attachments/assets/ee74c4d2-02a0-42c4-9ae1-6e58b2f0cee6)
+
+![Screenshot 2025-03-10 022801](https://github.com/user-attachments/assets/3688e865-2efb-4382-a2c0-8a6f31068872)
+
+![image](https://github.com/user-attachments/assets/1100f86e-d04b-44c6-be69-896d09b3d09e)
+
+
+
+
+
 ## Tech Stack
 
 - **Backend**: FastAPI
