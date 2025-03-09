@@ -26,7 +26,7 @@ First we ask a non general knowledge question, and it replies it does not know.
 
 ![Screenshot 2025-03-10 022801](https://github.com/user-attachments/assets/3688e865-2efb-4382-a2c0-8a6f31068872)
 
-Then we feed/ingest that data in the database.
+Then we feed/ingest that data in the database. We also need to add that document ID to selected_ids using the selection service, so the QNA will search through the selected ids only.
 
 ![image](https://github.com/user-attachments/assets/1100f86e-d04b-44c6-be69-896d09b3d09e)
 
