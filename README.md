@@ -24,6 +24,7 @@ The Document Management System is a FastAPI-based web application that allows us
 Pull the docker image from:
 
 > docker pull dadarklord/rag_qna:latest
+
 (Could be under construction as I am actively working on this project still)
 
 ### Prerequisites
