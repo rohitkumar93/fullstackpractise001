@@ -1,6 +1,5 @@
 import feedparser
 import httpx
-import asyncio
 from src.services.ingestion_service.service import DocumentIngestionService
 
 ARXIV_API_URL = "http://export.arxiv.org/api/query"

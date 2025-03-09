@@ -64,5 +64,6 @@ def ingest_sample_documents():
 
     db.close()
 
+
 if __name__ == "__main__":
     ingest_sample_documents()

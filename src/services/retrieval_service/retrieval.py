@@ -1,6 +1,10 @@
-from sqlalchemy.sql import text
-from src.backend.database.config import AsyncSessionLocal
-from src.services.ingestion_service.embedding_generator import EmbeddingGenerator
+from sqlalchemy.sql import text  # Import SQL utilities for executing raw queries
+from src.backend.database.config import (
+    AsyncSessionLocal,
+)  # Import async database session
+from src.services.ingestion_service.embedding_generator import (
+    EmbeddingGenerator,
+)  # Import embedding generator
 
 
 class RetrievalService:
@@ -9,15 +13,20 @@ class RetrievalService:
     """
 
     def __init__(self):
-        self.embedding_generator = EmbeddingGenerator()
+        self.embedding_generator = (
+            EmbeddingGenerator()
+        )  # Initialize embedding generator instance
 
     async def retrieve_relevant_docs(self, question: str, top_k: int = 5):
         """
         Converts the query into an embedding and retrieves the most similar documents asynchronously.
+        - Generates an embedding for the query.
+        - Retrieves selected document IDs from the database.
+        - Performs vector similarity search to find the closest matches.
         """
-        async with AsyncSessionLocal() as db:
-            async with db.begin():
-                # ✅ Generate embedding in a separate thread
+        async with AsyncSessionLocal() as db:  # Open async database session
+            async with db.begin():  # Start a database transaction
+                # ✅ Generate embedding asynchronously
                 query_embedding = await self.embedding_generator.generate_embedding(
                     question
                 )
@@ -28,14 +37,13 @@ class RetrievalService:
 
                 # ✅ Convert NumPy array to PostgreSQL-compatible format
                 query_embedding_str = "[" + ",".join(map(str, query_embedding)) + "]"
+
                 # ✅ Fetch selected document IDs asynchronously
                 selected_ids_result = await db.execute(
                     text("SELECT document_id FROM selected_documents;")
                 )
 
-
                 selected_ids = selected_ids_result.scalars().all()
-                # selected_ids = (await selected_ids_result.scalars()).all()
 
                 # ✅ Ensure selected_ids is not empty to prevent SQL errors
                 if not selected_ids:
@@ -58,11 +66,8 @@ class RetrievalService:
                     },
                 )
 
-                # document_ids = (await results.scalars()).all()\
-
-                # document_ids = list(await results.scalars())
+                # ✅ Extract document IDs from query results
                 document_ids = list(results.scalars())
-
                 return document_ids
 
     async def get_document_texts(self, document_ids: list[int]):
@@ -70,13 +75,12 @@ class RetrievalService:
         Fetches the actual document texts for the given document IDs.
         """
         if not document_ids:
-            return []
+            return []  # Return empty list if no document IDs provided
 
-        async with AsyncSessionLocal() as db:
-            async with db.begin():
+        async with AsyncSessionLocal() as db:  # Open async database session
+            async with db.begin():  # Start a transaction
                 question = text(
                     "SELECT content FROM documents WHERE id = ANY(:document_ids);"
                 )
                 results = await db.execute(question, {"document_ids": document_ids})
-                # return (await results.scalars()).all()
-                return results.scalars().all()
+                return results.scalars().all()  # Return list of document contents

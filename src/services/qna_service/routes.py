@@ -23,7 +23,10 @@ async def ask_question(request: QueryRequest):
         )
 
         if not relevant_docs:
-            raise HTTPException(status_code=404, detail="No relevant documents found. The database does not have enough information to answer the question. Please ingest some data first.")
+            raise HTTPException(
+                status_code=404,
+                detail="No relevant documents found. The database does not have enough information to answer the question. Please ingest some data first.",
+            )
 
         # ✅ Await the async function call
         answer = await qna_service.get_answer(request)

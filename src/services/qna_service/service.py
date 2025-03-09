@@ -9,21 +9,20 @@ class QnAService:
     """
     Handles Q&A functionality by retrieving relevant documents and generating an answer.
     """
-    
-    
-    
 
     def __init__(self):
         load_dotenv()  # ✅ Explicitly load .env file (only needed for local development)
-        
+
         self.retrieval_service = RetrievalService()
         self.openai_api_key = os.getenv("OPENAI_API_KEY")
 
         if not self.openai_api_key:
-            raise ValueError("❌ OpenAI API key is missing! Make sure it is securely set in the environment. This project cannot run without it.")
+            raise ValueError(
+                "❌ OpenAI API key is missing! Make sure it is securely set in the environment. This project cannot run without it."
+            )
 
         openai.api_key = self.openai_api_key  # ✅ Set the API key for OpenAI usage
-    
+
     async def get_answer(self, request: QueryRequest) -> QueryResponse:
         """
         Retrieves the most relevant documents and generates an answer
