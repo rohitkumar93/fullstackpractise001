@@ -41,7 +41,8 @@ SessionLocal = sessionmaker(
     class_=AsyncSession,  # Use asynchronous session class
 )
 
-# TODO: Cleanup I believe this event is now deprecated 
+
+# TODO: Cleanup I believe this event is now deprecated
 @app.on_event("startup")
 async def startup():
     """✅ Ensure database connection is working when the app starts."""

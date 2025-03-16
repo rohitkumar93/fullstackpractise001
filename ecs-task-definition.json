@@ -1,0 +1,32 @@
+{
+  "family": "rag-qna-task",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "rag-qna-container",
+      "image": "dadarklord/rag_qna:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "hostPort": 8000
+        }
+      ],
+      "environment": [
+        {
+          "name": "DATABASE_URL",
+          "value": "postgresql://postgres:password@rag-qna-db.clasiemouh9f.ap-south-1.rds.amazonaws.com:5432/rag_qna_db"
+        },
+        {
+          "name": "OPENAI_API_KEY",
+          "value": "${OPENAI_API_KEY}"
+        }
+      ]
+    }
+  ],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512"
+}
