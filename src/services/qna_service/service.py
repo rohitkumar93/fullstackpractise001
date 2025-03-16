@@ -59,7 +59,7 @@ class QnAService:
                     "content": f"Context:\n{doc_texts}\n\nQuestion: {request.question}\nAnswer:",
                 },
             ],
-            temperature=0.7,
+            temperature=0.0, #always pick the most likely response; do not use pre-trained knowledge
             max_tokens=500,
         )
 
