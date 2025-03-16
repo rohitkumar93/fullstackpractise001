@@ -13,29 +13,21 @@ The Document Management System is a FastAPI-based web application that allows us
 - **OpenAI QNA**: Once a question has been asked, the OpenAI client will search through the vectors given  in the selected documents, and formulate an answer using LLM to create a meaningful answer.
 
 
-
-The OpenAI client being used, does have some general knowledge already. My intention was to use a good LLM so it can formulate and create meaningful sentences. Unfortunately, to test if the retrieval and ingestion services work, we have to ask questions that the OpenAI does not already know, so we can assert that it is indeed learning from the documentation we are providing.e.g.
-
- 
+The OpenAI client being used is currently working at a `temperature` of 0; meaning it will not use any pre-trained knowledge it has but only the knowledge we provide from the ingested and selected documents. To test if the retrieval and ingestion services work, we have to ask questions that the OpenAI does not already know, so we can assert that it is indeed learning from the documentation we are providing e.g
 
 
-
-
-First we ask a non general knowledge question, and it replies it does not know.
+First we ask a non-general knowledge question, and it replies it does not know.
 
 
 ![Screenshot 2025-03-10 022801](https://github.com/user-attachments/assets/3688e865-2efb-4382-a2c0-8a6f31068872)
 
-Then we feed/ingest that data in the database. We also need to add that document ID to selected_ids using the selection service, so the QNA will search through the selected ids only.
+Then we feed/ingest that data in the database. We also need to add that document ID to selected_ids using the selection service, so the QNA will search through the selected documents only.
 
 ![image](https://github.com/user-attachments/assets/1100f86e-d04b-44c6-be69-896d09b3d09e)
 
 Now the AI knows that new information!
 
 ![Screenshot 2025-03-10 023810](https://github.com/user-attachments/assets/ee74c4d2-02a0-42c4-9ae1-6e58b2f0cee6)
-
-
-
 
 
 
@@ -52,7 +44,7 @@ Pull the docker image from:
 
 > docker pull dadarklord/rag_qna:latest
 
-(Could be under construction as I am actively working on this project still)
+(Still under construction as I am actively working/experimenting on this project)
 
 ### Prerequisites
 
