@@ -113,6 +113,8 @@ Much more work to be done!
 # Miscellaneous:
 
 Curl command to test multiple (add ending brace at 144):
+
+```
 # Start background jobs
 $jobs = 1..10 | ForEach-Object {
     Start-Job -ScriptBlock {
@@ -157,3 +159,4 @@ $jobs | ForEach-Object { Receive-Job -Id $_.Id }
 
 # Cleanup finished jobs
 $jobs | ForEach-Object { Remove-Job -Id $_.Id }
+```
