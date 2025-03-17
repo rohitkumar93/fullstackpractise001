@@ -45,7 +45,7 @@ jobs:
         env:
           DATABASE_URL: postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}
         run: |
-          pytest --cov=src --cov-report=xml
+          pytest --cov=src --cov-report=xml --asyncio-mode=auto
 
   build:
     runs-on: ubuntu-latest

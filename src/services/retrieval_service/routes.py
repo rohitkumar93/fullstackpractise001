@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from .retrieval import RetrievalService
-from .bm25_retrieval import BM25RetrievalService  # ✅ Import BM25 retrieval service
+# from .bm25_retrieval import BM25RetrievalService  # ✅ Import BM25 retrieval service
 
 import logging
 
@@ -40,21 +40,21 @@ async def retrieve_documents(
 
 
 # ✅ BM25-based retrieval route
-@router.post("/search/bm25")
-async def retrieve_documents_bm25(
-    request: QueryRequest, service: BM25RetrievalService = Depends()
-):
-    """
-    Accepts a user query, retrieves the most relevant documents using BM25 ranking,
-    and returns matching document contents.
-    """
+# @router.post("/search/bm25")
+# async def retrieve_documents_bm25(
+#     request: QueryRequest, service: BM25RetrievalService = Depends()
+# ):
+#     """
+#     Accepts a user query, retrieves the most relevant documents using BM25 ranking,
+#     and returns matching document contents.
+#     """
 
-    # ✅ Debug: Print the received request
-    logger.debug(f"Received Request (BM25): {request}")
+#     # ✅ Debug: Print the received request
+#     logger.debug(f"Received Request (BM25): {request}")
 
-    results = await service.retrieve_relevant_docs(request.question, request.top_k)
+#     results = await service.retrieve_relevant_docs(request.question, request.top_k)
 
-    # ✅ Debug: Print the retrieved documents
-    logger.debug(f"Retrieved Documents (BM25): {results}")
+#     # ✅ Debug: Print the retrieved documents
+#     logger.debug(f"Retrieved Documents (BM25): {results}")
 
-    return {"documents": results}
+#     return {"documents": results}
